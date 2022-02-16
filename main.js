@@ -22,15 +22,15 @@ function Calc(operation, a, b) {
 }
 
 calcBtnDel.addEventListener('click', function () {
-  resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : '96px'
   const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
+  resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
   resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
 
   return !operator && (a = resultInput.value)
 });
 
 calcBtnReset.addEventListener('click', function () {
-  resultInput.style.fontSize = '96px'
+  resultInput.style.fontSize = null
   resultInput.value = '0';
   operator = ''
   a = ''
@@ -39,14 +39,15 @@ calcBtnReset.addEventListener('click', function () {
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
-    console.log(resultInput.value.length)
+    resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
 
-    resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : '96px'
     if (flag && !operator) {
       resultInput.value = ''
       flag = 0;
       a = ''
-    }!operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
+    }
+    
+    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
     resultInput.value = resultInput.value === '0' ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent)
   });
 });
@@ -72,7 +73,6 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
 
       operator = calcBtnOperator.textContent;
       resultInput.value += operator
-      return;
     }
 
     switch (calcBtnOperator.textContent) {
@@ -94,6 +94,7 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
 
       default:
         resultInput.value = Calc(operator, +a, +b);
+        resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
         operator = ''
         a = resultInput.value
         b = ''
@@ -102,5 +103,3 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
     }
   });
 });
-
-
