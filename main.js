@@ -21,7 +21,12 @@ function Calc(operation, a, b) {
 }
 
 calcBtnDel.addEventListener('click', function () {
-  operationInput.value = operationInput.value.slice(0, length - 1);
+
+  if (operationInput.value === '0') {
+    operationInput.value = '0'
+  } else {
+    operationInput.value = operationInput.value.slice(0, length - 1);
+  }
 });
 
 calcBtnReset.addEventListener('click', function () {
