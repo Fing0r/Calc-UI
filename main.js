@@ -6,27 +6,22 @@ const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
 const operationInput = document.querySelector('.calc__operation');
 const resultInput = document.querySelector('.calc__result');
 let operator = '';
-let operation = '';
 
 function Calc(operation, a, b) {
   const isNotValid = typeof a !== 'number' || typeof b !== 'number' || !operation || a !== a || b !== b;
   if (isNotValid) return "Error";
   const operations = {
-    sum: a + b,
-    subt: a - b,
-    multi: a * b,
-    div: b === 0 ? "Error" : a / b
+    '+': a + b,
+    '–': a - b,
+    '×': a * b,
+    '÷': b === 0 ? "Error" : a / b
   };
   return operations[operation];
 }
 
 calcBtnDel.addEventListener('click', function () {
-
-  if (operationInput.value === '0') {
-    operationInput.value = '0'
-  } else {
-    operationInput.value = operationInput.value.slice(0, length - 1);
-  }
+    const isZeroOrEmpty = (operationInput.value === '0' || operationInput.value.length  ===  1)
+    operationInput.value = isZeroOrEmpty ? '0' : operationInput.value.slice(0, length - 1)
 });
 
 calcBtnReset.addEventListener('click', function () {
@@ -50,30 +45,26 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
       case '+':
         operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
-        operation = 'sum';
         break;
 
       case '–':
         operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
-        operation = 'subt';
         break;
 
       case '×':
         operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
-        operation = 'multi';
         break;
 
       case '÷':
         operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
-        operation = 'div';
         break;
 
       default:
         const arrNum = operationInput.value.split(operator);
-        resultInput.value = Calc(operation, +arrNum[0], +arrNum[1]);
+        resultInput.value = Calc(operator, +arrNum[0], +arrNum[1]);
         break;
     }
   });
