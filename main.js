@@ -1,17 +1,17 @@
-var calcBtnsNum = document.querySelectorAll('.calc__btn--num');
-var calcBtnDel = document.querySelector('.calc__btn--del');
-var calcBtnEquals = document.querySelector('.calc__btn--equals');
-var calcBtnReset = document.querySelector('.calc__btn--reset');
-var calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
-var operationInput = document.querySelector('.calc__operation');
-var resultInput = document.querySelector('.calc__result');
-var oper = '';
-var operation = '';
+const calcBtnsNum = document.querySelectorAll('.calc__btn--num');
+const calcBtnDel = document.querySelector('.calc__btn--del');
+const calcBtnEquals = document.querySelector('.calc__btn--equals');
+const calcBtnReset = document.querySelector('.calc__btn--reset');
+const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
+const operationInput = document.querySelector('.calc__operation');
+const resultInput = document.querySelector('.calc__result');
+let operator = '';
+let operation = '';
 
 function Calc(operation, a, b) {
-  var isNotValid = typeof a !== 'number' || typeof b !== 'number' || !operation || a !== a || b !== b;
+  const isNotValid = typeof a !== 'number' || typeof b !== 'number' || !operation || a !== a || b !== b;
   if (isNotValid) return "Error";
-  var operations = {
+  const operations = {
     sum: a + b,
     subt: a - b,
     multi: a * b,
@@ -43,32 +43,32 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
   calcBtnOperator.addEventListener('click', function () {
     switch (calcBtnOperator.textContent) {
       case '+':
-        oper = calcBtnOperator.textContent;
+        operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
         operation = 'sum';
         break;
 
       case '–':
-        oper = calcBtnOperator.textContent;
+        operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
         operation = 'subt';
         break;
 
       case '×':
-        oper = calcBtnOperator.textContent;
+        operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
         operation = 'multi';
         break;
 
       case '÷':
-        oper = calcBtnOperator.textContent;
+        operator = calcBtnOperator.textContent;
         operationInput.value += calcBtnOperator.textContent;
         operation = 'div';
         break;
 
       default:
-        var arr = operationInput.value.split(oper);
-        resultInput.value = Calc(operation, +arr[0], +arr[1]);
+        const arrNum = operationInput.value.split(operator);
+        resultInput.value = Calc(operation, +arrNum[0], +arrNum[1]);
         break;
     }
   });
