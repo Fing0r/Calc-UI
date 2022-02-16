@@ -1,6 +1,5 @@
 const calcBtnsNum = document.querySelectorAll('.calc__btn--num');
 const calcBtnDel = document.querySelector('.calc__btn--del');
-const calcBtnEquals = document.querySelector('.calc__btn--equals');
 const calcBtnReset = document.querySelector('.calc__btn--reset');
 const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
 const operationInput = document.querySelector('.calc__operation');
@@ -8,7 +7,7 @@ const resultInput = document.querySelector('.calc__result');
 let operator = '';
 
 function Calc(operation, a, b) {
-  const isNotValid = typeof a !== 'number' || typeof b !== 'number' || !operation || a !== a || b !== b;
+  const isNotValid = !operation;
   if (isNotValid) return "Error";
   const operations = {
     '+': a + b,
@@ -31,11 +30,7 @@ calcBtnReset.addEventListener('click', function () {
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
-    if (operationInput.value === '0') {
-      operationInput.value = calcBtnNum.textContent;
-    } else {
-      operationInput.value += calcBtnNum.textContent;
-    }
+    operationInput.value = operationInput.value === '0' ? calcBtnNum.textContent : (operationInput.value + calcBtnNum.textContent)
   });
 });
 
