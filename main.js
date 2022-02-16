@@ -7,6 +7,7 @@ const resultInput = document.querySelector('.calc__result');
 let operator = '';
 let a = ''
 let b = ''
+let flag = 0
 
 function Calc(operation, a, b) {
   const isNotValid = !operation;
@@ -21,17 +22,15 @@ function Calc(operation, a, b) {
 }
 
 calcBtnDel.addEventListener('click', function () {
-  if (!operator) {
-    const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
-    resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
-    a = resultInput.value
-    return
-  }
+  resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : '96px'
   const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
   resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
+
+  return !operator && (a = resultInput.value)
 });
 
 calcBtnReset.addEventListener('click', function () {
+  resultInput.style.fontSize = '96px'
   resultInput.value = '0';
   operator = ''
   a = ''
@@ -40,7 +39,14 @@ calcBtnReset.addEventListener('click', function () {
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
-    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
+    console.log(resultInput.value.length)
+
+    resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : '96px'
+    if (flag && !operator) {
+      resultInput.value = ''
+      flag = 0;
+      a = ''
+    }!operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
     resultInput.value = resultInput.value === '0' ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent)
   });
 });
@@ -91,7 +97,10 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
         operator = ''
         a = resultInput.value
         b = ''
+        flag = 1
         break;
     }
   });
 });
+
+
