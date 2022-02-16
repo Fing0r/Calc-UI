@@ -5,6 +5,8 @@ const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
 const operationInput = document.querySelector('.calc__operation');
 const resultInput = document.querySelector('.calc__result');
 let operator = '';
+let a = ''
+let b = ''
 
 function Calc(operation, a, b) {
   const isNotValid = !operation;
@@ -19,47 +21,76 @@ function Calc(operation, a, b) {
 }
 
 calcBtnDel.addEventListener('click', function () {
-    const isZeroOrEmpty = (operationInput.value === '0' || operationInput.value.length  ===  1)
-    operationInput.value = isZeroOrEmpty ? '0' : operationInput.value.slice(0, length - 1)
+  if (!operator) {
+    const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
+    resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
+    a = resultInput.value
+    return
+  }
+  const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
+  resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
 });
 
 calcBtnReset.addEventListener('click', function () {
-  operationInput.value = '0';
-  resultInput.value = '';
+  resultInput.value = '0';
+  operator = ''
+  a = ''
+  b = ''
 });
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
-    operationInput.value = operationInput.value === '0' ? calcBtnNum.textContent : (operationInput.value + calcBtnNum.textContent)
+    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
+    resultInput.value = resultInput.value === '0' ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent)
   });
 });
 
 calcBtnOperators.forEach(function (calcBtnOperator) {
   calcBtnOperator.addEventListener('click', function () {
+
+    function addOperator() {
+      if (a && b && operator) {
+        resultInput.value = Calc(operator, +a, +b);
+        a = resultInput.value
+        b = ''
+        operator = calcBtnOperator.textContent;
+        resultInput.value += operator
+        return
+      }
+
+      if (operator) {
+        operator = calcBtnOperator.textContent;
+        resultInput.value = resultInput.value.slice(0, length - 1) + operator
+        return;
+      }
+
+      operator = calcBtnOperator.textContent;
+      resultInput.value += operator
+      return;
+    }
+
     switch (calcBtnOperator.textContent) {
       case '+':
-        operator = calcBtnOperator.textContent;
-        operationInput.value += calcBtnOperator.textContent;
-        break;
+        addOperator()
+        break
 
       case '–':
-        operator = calcBtnOperator.textContent;
-        operationInput.value += calcBtnOperator.textContent;
+        addOperator()
         break;
 
       case '×':
-        operator = calcBtnOperator.textContent;
-        operationInput.value += calcBtnOperator.textContent;
+        addOperator()
         break;
 
       case '÷':
-        operator = calcBtnOperator.textContent;
-        operationInput.value += calcBtnOperator.textContent;
+        addOperator()
         break;
 
       default:
-        const arrNum = operationInput.value.split(operator);
-        resultInput.value = Calc(operator, +arrNum[0], +arrNum[1]);
+        resultInput.value = Calc(operator, +a, +b);
+        operator = ''
+        a = resultInput.value
+        b = ''
         break;
     }
   });
