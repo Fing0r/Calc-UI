@@ -1,4 +1,5 @@
 const calcBtnsNum = document.querySelectorAll('.calc__btn--num');
+const calcBtns = document.querySelectorAll('.calc__btn');
 const calcBtnDel = document.querySelector('.calc__btn--del');
 const calcBtnReset = document.querySelector('.calc__btn--reset');
 const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
@@ -7,48 +8,57 @@ const resultInput = document.querySelector('.calc__result');
 let operator = '';
 let a = ''
 let b = ''
-let flag = 0
 
 function Calc(operation, a, b) {
-  const isNotValid = !operation;
-  if (isNotValid) return "Error";
   const operations = {
-    '+': a + b,
-    '–': a - b,
-    '×': a * b,
-    '÷': b === 0 ? "Error" : a / b
+    'sum': a + b,
+    'subt': a - b,
+    'multi': a * b,
+    'div': b === 0 ? "Error" : a / b
   };
   return operations[operation];
 }
 
-calcBtnDel.addEventListener('click', function () {
-  const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1)
-  resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
-  resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1)
+const operators = {
+  '+': 'sum',
+  '–': 'subt',
+  '×': 'multi',
+  '÷': 'div',
+}
 
-  return !operator && (a = resultInput.value)
+function changeFontSize() {
+  if (resultInput.value.length > 5 && resultInput.value.length < 9) {
+    resultInput.style.fontSize = '60px'
+  } else if (resultInput.value.length >= 9 && resultInput.value.length < 13) {
+    resultInput.style.fontSize = '40px'
+  } else if (resultInput.value.length >= 13) {
+    resultInput.style.fontSize = '20px'
+  } else {
+    resultInput.style.fontSize = null
+  }
+}
+
+calcBtnDel.addEventListener('click', function () {
+  if (resultInput.value === 'Error') return;
+
+  const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1);
+  resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1);
+
+  !operator ? (a = resultInput.value) : (b = b.slice(0, length - 1))
 });
 
 calcBtnReset.addEventListener('click', function () {
-  resultInput.style.fontSize = null
   resultInput.value = '0';
   operator = ''
-  a = ''
+  a = '0'
   b = ''
 });
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
-    resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
-
-    if (flag && !operator) {
-      resultInput.value = ''
-      flag = 0;
-      a = ''
-    }
-    
-    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent)
-    resultInput.value = resultInput.value === '0' ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent)
+    if (resultInput.value === 'Error') return;
+    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent);
+    resultInput.value = (resultInput.value === '0') ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent);
   });
 });
 
@@ -56,50 +66,41 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
   calcBtnOperator.addEventListener('click', function () {
 
     function addOperator() {
-      if (a && b && operator) {
-        resultInput.value = Calc(operator, +a, +b);
-        a = resultInput.value
-        b = ''
-        operator = calcBtnOperator.textContent;
-        resultInput.value += operator
-        return
-      }
+      if (!operator) operator = calcBtnOperator.textContent;
 
-      if (operator) {
-        operator = calcBtnOperator.textContent;
-        resultInput.value = resultInput.value.slice(0, length - 1) + operator
-        return;
-      }
+      for (const key in operators) {
+        if (b && operator === key) {
+          resultInput.value = Calc(operators[key], +a, +b);
+          if (resultInput.value === 'Error') return;
+          a = resultInput.value;
+          b = '';
+          operator = calcBtnOperator.textContent;
+          resultInput.value = a + operator;
+          return
+        }
 
-      operator = calcBtnOperator.textContent;
+        if (resultInput.value.includes(key)) {
+          operator = calcBtnOperator.textContent;
+          resultInput.value = resultInput.value.slice(0, length - 1) + operator;
+          return;
+        }
+      }
       resultInput.value += operator
     }
 
-    switch (calcBtnOperator.textContent) {
-      case '+':
-        addOperator()
-        break
+    if (calcBtnOperator.textContent in operators) return addOperator()
 
-      case '–':
-        addOperator()
-        break;
-
-      case '×':
-        addOperator()
-        break;
-
-      case '÷':
-        addOperator()
-        break;
-
-      default:
-        resultInput.value = Calc(operator, +a, +b);
-        resultInput.style.fontSize = resultInput.value.length > 4 ? '40px' : null
-        operator = ''
-        a = resultInput.value
-        b = ''
-        flag = 1
-        break;
+    if (operator in operators) {
+      resultInput.value = Calc(operators[operator], +a, +b);
+      if (resultInput.value === 'Error') return;
+      a = resultInput.value
+      b = ''
+      operator = ''
     }
   });
+});
+
+
+calcBtns.forEach(calcBtn => {
+  calcBtn.addEventListener('click', changeFontSize)
 });
