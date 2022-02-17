@@ -5,6 +5,7 @@ const calcBtnReset = document.querySelector('.calc__btn--reset');
 const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
 const operationInput = document.querySelector('.calc__operation');
 const resultInput = document.querySelector('.calc__result');
+
 let operator = '';
 let num1 = '';
 let num2 = '';
@@ -77,8 +78,8 @@ function addOperator(btn) {
 calcBtnDel.addEventListener('click', function () {
   if (resultInput.value === 'Error') return;
   const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1);
-
   resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1);
+  !num2 && (operator = '');
   !operator ? (num1 = resultInput.value) : (num2 = num2.slice(0, length - 1));
 });
 
@@ -90,9 +91,17 @@ calcBtnReset.addEventListener('click', function () {
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
     if (resultInput.value === 'Error') return;
-
+    
     !operator ? (num1 += calcBtnNum.textContent) : (num2 += calcBtnNum.textContent);
-    resultInput.value = (resultInput.value === '0') ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent);
+
+    if ((num2[0] === '0' && num2.length > 1)) {
+      num2 = num2.slice(1)
+    }
+    if ((num1[0] === '0' && num1.length > 1)) {
+      num1 = num1.slice(1)
+    }
+
+    resultInput.value = `${num1}${operator}${num2}`
   });
 });
 
