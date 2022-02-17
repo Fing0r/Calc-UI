@@ -6,8 +6,8 @@ const calcBtnOperators = document.querySelectorAll('.calc__btn--operator');
 const operationInput = document.querySelector('.calc__operation');
 const resultInput = document.querySelector('.calc__result');
 let operator = '';
-let a = '';
-let b = '';
+let num1 = '';
+let num2 = '';
 
 const OPERATORS = {
   '+': 'sum',
@@ -15,7 +15,6 @@ const OPERATORS = {
   '×': 'multi',
   '÷': 'div',
 }
-
 
 function Calc(operation, a, b) {
   const operations = {
@@ -41,15 +40,15 @@ function changeFontSize() {
 
 function getResult() {
   if (operator in OPERATORS) {
-    resultInput.value = Calc(OPERATORS[operator], +a, +b);
+    resultInput.value = Calc(OPERATORS[operator], +num1, +num2);
     if (resultInput.value === 'Error') return;
     clearVariables()
   }
 }
 
 function clearVariables() {
-  a = resultInput.value;
-  b = '';
+  num1 = resultInput.value;
+  num2 = '';
   operator = '';
 }
 
@@ -57,12 +56,12 @@ function addOperator(btn) {
   if (!operator) operator = btn.textContent;
 
   for (const key in OPERATORS) {
-    if (b && operator === key) {
-      resultInput.value = Calc(OPERATORS[key], +a, +b);
+    if (num2 && operator === key) {
+      resultInput.value = Calc(OPERATORS[key], +num1, +num2);
       if (resultInput.value === 'Error') return;
       clearVariables()
       operator = btn.textContent;
-      resultInput.value = a + operator;
+      resultInput.value = num1 + operator;
       return;
     }
 
@@ -80,7 +79,7 @@ calcBtnDel.addEventListener('click', function () {
   const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1);
 
   resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1);
-  !operator ? (a = resultInput.value) : (b = b.slice(0, length - 1));
+  !operator ? (num1 = resultInput.value) : (num2 = num2.slice(0, length - 1));
 });
 
 calcBtnReset.addEventListener('click', function () {
@@ -92,7 +91,7 @@ calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
     if (resultInput.value === 'Error') return;
 
-    !operator ? (a += calcBtnNum.textContent) : (b += calcBtnNum.textContent);
+    !operator ? (num1 += calcBtnNum.textContent) : (num2 += calcBtnNum.textContent);
     resultInput.value = (resultInput.value === '0') ? calcBtnNum.textContent : (resultInput.value + calcBtnNum.textContent);
   });
 });
