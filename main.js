@@ -30,9 +30,9 @@ function Calc(operation, a, b) {
 function changeFontSize() {
   if (resultInput.value.length > 5 && resultInput.value.length < 9) {
     resultInput.style.fontSize = '60px'
-  } else if (resultInput.value.length >= 9 && resultInput.value.length < 13) {
+  } else if (resultInput.value.length >= 9 && resultInput.value.length < 16) {
     resultInput.style.fontSize = '40px'
-  } else if (resultInput.value.length >= 13) {
+  } else if (resultInput.value.length >= 16) {
     resultInput.style.fontSize = '20px'
   } else {
     resultInput.style.fontSize = null
@@ -41,28 +41,21 @@ function changeFontSize() {
 
 function getResult() {
   if (operator in OPERATORS) {
-    resultInput.value = Calc(OPERATORS[operator], +num1, +num2);
+    num1 = Calc(OPERATORS[operator], +num1, +num2)
     if (resultInput.value === 'Error') return;
-    clearVariables()
+    outputOnDisplay(num1)
   }
 }
 
-function clearVariables() {
-  num1 = resultInput.value;
-  num2 = '';
-  operator = '';
-}
-
 function addOperator(btn) {
-  if (!operator) operator = btn.textContent;
+  !operator && (operator = btn.textContent);
 
   for (const key in OPERATORS) {
-    if (num2 && operator === key) {
-      resultInput.value = Calc(OPERATORS[key], +num1, +num2);
+    if ((num2 || num2 === 0) && operator === key) {
+      num1 = Calc(OPERATORS[operator], +num1, +num2)
       if (resultInput.value === 'Error') return;
-      clearVariables()
       operator = btn.textContent;
-      resultInput.value = num1 + operator;
+      outputOnDisplay(num1, operator);
       return;
     }
 
@@ -72,36 +65,50 @@ function addOperator(btn) {
       return;
     }
   }
+  if (resultInput.value === 'Error') return;
   resultInput.value += operator;
+}
+
+function outputOnDisplay(numOne, op, numTwo) {
+  !op && (operator = '');
+  !numTwo && (num2 = '');
+  !numOne && (num1 = 0);
+  resultInput.value = `${num1.toLocaleString('en-US', {maximumFractionDigits: 20}) }${operator}${num2.toLocaleString('en-US', {maximumFractionDigits: 20}) }`
 }
 
 calcBtnDel.addEventListener('click', function () {
   if (resultInput.value === 'Error') return;
-  const isZeroOrEmpty = (resultInput.value === '0' || resultInput.value.length === 1);
-  resultInput.value = isZeroOrEmpty ? '0' : resultInput.value.slice(0, length - 1);
-  !num2 && (operator = '');
-  !operator ? (num1 = resultInput.value) : (num2 = num2.slice(0, length - 1));
+  const reduceNum = (num) => String(num).length === 1 ? '' : +String(num).slice(0, length - 1);
+  const isNegativeZero = (String(num1).length === 2 && String(num1)[0] === '-');
+  const isFraction = num1 % 1;
+
+  if (isFraction) {
+    num1 = reduceNum(num1)
+    return outputOnDisplay(num1);
+  }
+
+  if (isNegativeZero) {
+    return outputOnDisplay()
+  }
+
+  if (!num2 && operator || num1 < 0) {
+    if (operator) return outputOnDisplay(num1)
+    num1 = reduceNum(num1)
+    return outputOnDisplay(num1)
+  }
+
+  !operator ? (num1 = reduceNum(num1) || 0) : (num2 = reduceNum(num2))
+  outputOnDisplay(num1, operator, num2)
 });
 
-calcBtnReset.addEventListener('click', function () {
-  resultInput.value = '0';
-  clearVariables()
-});
 
 calcBtnsNum.forEach(function (calcBtnNum) {
   calcBtnNum.addEventListener('click', function () {
     if (resultInput.value === 'Error') return;
-    
-    !operator ? (num1 += calcBtnNum.textContent) : (num2 += calcBtnNum.textContent);
+    const increaseNum = (num) => (String(num).length < 6) ? (num += calcBtnNum.textContent) : num;
 
-    if ((num2[0] === '0' && num2.length > 1)) {
-      num2 = num2.slice(1)
-    }
-    if ((num1[0] === '0' && num1.length > 1)) {
-      num1 = num1.slice(1)
-    }
-
-    resultInput.value = `${num1}${operator}${num2}`
+    !operator ? (num1 = +increaseNum(num1)) : (num2 = +increaseNum(num2));
+    outputOnDisplay(num1, operator, num2)
   });
 });
 
@@ -110,6 +117,10 @@ calcBtnOperators.forEach(function (calcBtnOperator) {
     (calcBtnOperator.textContent in OPERATORS) ? addOperator(calcBtnOperator): getResult();
   });
 });
+
+calcBtnReset.addEventListener('click', function () {
+  outputOnDisplay();
+})
 
 calcBtns.forEach(calcBtn => {
   calcBtn.addEventListener('click', changeFontSize)
