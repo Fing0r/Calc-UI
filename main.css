@@ -152,21 +152,23 @@ button {
   background-color: var(--dark-btn);
 }
 
-.calc__btn--operator {
+.calc__btn[data-btn="operator"],
+.calc__btn[data-btn="equals"] {
   background-color: var(--blue-btn);
 }
 
-.calc__btn--operator:hover {
+.calc__btn[data-btn="operator"]:hover,
+.calc__btn[data-btn="equals"]:hover {
   background-color: var(--dark-btn);
 }
 
-.calc__btn--num:hover {
+.calc__btn[data-btn="num"]:hover {
   background-color: var(--blue-btn);
 }
 
 
 
-.calc__btn--del {
+.calc__btn[data-btn="del"] {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -178,21 +180,21 @@ button {
   justify-content: center;
 }
 
-.calc__btn--reset {
+.calc__btn[data-btn="reset"] {
   background-color: var(--grey-btn);
 }
 
-.calc__btn--del svg {
+.calc__btn[data-btn="del"] svg {
   fill: var(--white-color);
   transition: fill 0.3s;
 }
 
-.calc__btn--del:hover svg {
+.calc__btn[data-btn="del"]:hover svg {
   fill: var(--grey-btn);
 }
 
-.calc__btn--del:hover,
-.calc__btn--reset:hover {
+.calc__btn[data-btn="del"]:hover,
+.calc__btn[data-btn="reset"]:hover {
   background-color: var(--white-color);
   color: var(--grey-btn);
 }
