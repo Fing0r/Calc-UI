@@ -57,30 +57,27 @@ function changeFontSize() {
 }
 
 function getResult() {
-  if (num2 === '') return;
-  if (operator in OPERATORS) {
-    num1 = Calc(OPERATORS[operator], +num1, +num2);
-    outputOnDisplay(num1);
-  }
+  if (!num2) return;
+  num1 = Calc(OPERATORS[operator], +num1, +num2);
+  outputOnDisplay(num1);
 }
 
 function addOperator(e) {
   !operator && (operator = e.currentTarget.textContent);
 
-  for (const key in OPERATORS) {
-    if ((num2 || num2 === 0) && operator === key) {
-      num1 = Calc(OPERATORS[operator], +num1, +num2);
-      operator = e.currentTarget.textContent;
-      outputOnDisplay(num1, operator);
-      return;
-    }
-
-    if (resultInput.value.includes(key)) {
-      operator = e.currentTarget.textContent;
-      resultInput.value = resultInput.value.slice(0, length - 1) + operator;
-      return;
-    }
+  if ((num2 || num2 === 0)) {
+    num1 = Calc(OPERATORS[operator], +num1, +num2);
+    operator = e.currentTarget.textContent;
+    outputOnDisplay(num1, operator);
+    return;
   }
+
+  if (resultInput.value.includes(operator)) {
+    operator = e.currentTarget.textContent;
+    resultInput.value = resultInput.value.slice(0, length - 1) + operator;
+    return;
+  }
+
   resultInput.value += operator;
 }
 
